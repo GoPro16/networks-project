@@ -56,16 +56,22 @@ public class MainClass
          {
             case 1:
                str = "time"; 
+               sendRequest(str);
             case 2:
                str = "uptime";
+               sendRequest(str);
             case 3:
                str = "memory";
+               sendRequest(str);
             case 4:
                str = "netstat";
+               sendRequest(str);
             case 5:
                str = "users";
+               sendRequest(str);
             case 6:
                str = "process";
+               sendRequest(str);
             case 7: 
                done = false;
                break;           
