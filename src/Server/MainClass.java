@@ -39,7 +39,7 @@ public class MainClass {
 	                outputLine = kkp.processInput(inputLine);
 	                out.println(outputLine);
 	                if (outputLine.equals("quit")){
-	                	out.println("quit");
+	                	clientSocket.close();
 	                	break;
 	                }
 	                    
@@ -72,22 +72,22 @@ class ServerProtocol {
         } else if (state == SENTREQUEST) {
             switch(theInput){
             case "time":
-            	theOutput = "quit";
+            	theOutput = "time";
             	break;
             case "uptime":
-            	theOutput = "test";
+            	theOutput = "uptime";
             break;
             case "memory":
-            	theOutput = "test";
+            	theOutput = "memory";
             	break;
             case "netstat":
-            	theOutput = "test";
+            	theOutput = "netstat";
             	break;
             case "users":
-            	theOutput = "test";
+            	theOutput = "users";
             	break;
             case "process":
-            	theOutput = "test";
+            	theOutput = "process";
             	break;
             case "quit":
             	theOutput = "quit";
