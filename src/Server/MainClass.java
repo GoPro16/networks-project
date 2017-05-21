@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.net.*;
 import java.io.*;
  
@@ -14,96 +15,95 @@ import java.io.*;
  */
 public class MainClass {
 	
+	private static ServerSocket serverSocket;
+	private static Socket clientSocket;
+	private static PrintWriter out;
+	private static BufferedReader in;
+	
 	public static void main(String[] args){
-
- 
- 
-        
- 
-        try ( 
-            ServerSocket serverSocket = new ServerSocket(8080);
-            Socket clientSocket = serverSocket.accept();
-            PrintWriter out =
-                new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
-        ) {
-         
-            String inputLine, outputLine;
-             
-            // Initiate conversation with client
-            KnockKnockProtocol kkp = new KnockKnockProtocol();
-            outputLine = kkp.processInput(null);
-            out.println(outputLine);
- 
-            while ((inputLine = in.readLine()) != null) {
-                outputLine = kkp.processInput(inputLine);
-                out.println(outputLine);
-                if (outputLine.equals("Bye."))
-                    break;
-            }
-        } catch (IOException e) {
-            System.out.println("Exception caught when trying to listen on port "
-                + 8080 + " or listening for a connection");
-            System.out.println(e.getMessage());
-        }
+		try{
+			ServerSocket serverSocket = new ServerSocket(8080);
+			while(true){
+				
+				clientSocket = serverSocket.accept();
+				out = new PrintWriter(clientSocket.getOutputStream(), true);
+	            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	            String inputLine, outputLine;
+	             
+	            // Initiate conversation with client
+	            ServerProtocol kkp = new ServerProtocol();
+	            outputLine = kkp.processInput("WAITING");
+	            out.println(outputLine);
+	 
+	            while ((inputLine = in.readLine()) != null) {
+	                outputLine = kkp.processInput(inputLine);
+	                out.println(outputLine);
+	                if (outputLine.equals("quit")){
+	                	out.println("quit");
+	                	break;
+	                }
+	                    
+	            }
+			}
+		}catch(Exception e){
+			 System.out.println("Exception caught when trying to listen on port "
+		                + 8080 + " or listening for a connection");
+		            e.printStackTrace();
+		}
 	}
 }
-class KnockKnockProtocol {
+class ServerProtocol {
     private static final int WAITING = 0;
-    private static final int SENTKNOCKKNOCK = 1;
+    private static final int SENTREQUEST = 1;
     private static final int SENTCLUE = 2;
     private static final int ANOTHER = 3;
  
     private static final int NUMJOKES = 5;
  
     private int state = WAITING;
-    private int currentJoke = 0;
- 
-    private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
-    private String[] answers = { "Turnip the heat, it's cold in here!",
-                                 "I didn't know you could yodel!",
-                                 "Bless you!",
-                                 "Is there an owl in here?",
-                                 "Is there an echo in here?" };
+
  
     public String processInput(String theInput) {
         String theOutput = null;
  
         if (state == WAITING) {
-            theOutput = "Knock! Knock!";
-            state = SENTKNOCKKNOCK;
-        } else if (state == SENTKNOCKKNOCK) {
-            if (theInput.equalsIgnoreCase("Who's there?")) {
+            theOutput = "1";
+            state = SENTREQUEST;
+        } else if (state == SENTREQUEST) {
+            switch(theInput){
+            case "time":
+            	theOutput = "quit";
+            	break;
+            case "uptime":
+            	theOutput = "test";
+            break;
+            case "memory":
+            	theOutput = "test";
+            	break;
+            case "netstat":
+            	theOutput = "test";
+            	break;
+            case "users":
+            	theOutput = "test";
+            	break;
+            case "process":
+            	theOutput = "test";
+            	break;
+            case "quit":
+            	theOutput = "quit";
+            	break;
+            default:
+            	
+            	break;
+            }
+        	/*
+        	if (theInput.equalsIgnoreCase("Who's there?")) {
                 theOutput = clues[currentJoke];
                 state = SENTCLUE;
             } else {
                 theOutput = "You're supposed to say \"Who's there?\"! " +
                 "Try again. Knock! Knock!";
-            }
-        } else if (state == SENTCLUE) {
-            if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
-                theOutput = answers[currentJoke] + " Want another? (y/n)";
-                state = ANOTHER;
-            } else {
-                theOutput = "You're supposed to say \"" + 
-                clues[currentJoke] + 
-                " who?\"" + 
-                "! Try again. Knock! Knock!";
-                state = SENTKNOCKKNOCK;
-            }
-        } else if (state == ANOTHER) {
-            if (theInput.equalsIgnoreCase("y")) {
-                theOutput = "Knock! Knock!";
-                if (currentJoke == (NUMJOKES - 1))
-                    currentJoke = 0;
-                else
-                    currentJoke++;
-                state = SENTKNOCKKNOCK;
-            } else {
-                theOutput = "Bye.";
-                state = WAITING;
-            }
+            }*/
         }
         return theOutput;
     }
