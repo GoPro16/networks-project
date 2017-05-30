@@ -35,13 +35,14 @@ public class MainClass {
         } //end while
 
         if (numUsers == 1)
-            singleUser();
+            singleUser(args[0]);
         else
-            multipleUsers(numUsers);
+            multipleUsers(numUsers,args[0]);
     }//end main
 
-    public static void singleUser() {
-        try (Socket kkSocket = new Socket("127.0.0.1", 8080);
+    public static void singleUser(String address) {
+        long startT = 0;
+        try (Socket kkSocket = new Socket(address, 8080);
                 PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
             //Begin I/O Loop
@@ -50,6 +51,7 @@ public class MainClass {
             while (!done) {
                 getInput();
                 if (done == false) {
+                    startT=System.currentTimeMillis();
                     if (firstConn) {
                         if (in.readLine().equals("1")) {
                             out.println(str);
@@ -59,25 +61,28 @@ public class MainClass {
                         out.println(str);
                     }
                     String receivedData = in.readLine();
+                    System.out.println("Total Time: "+(System.currentTimeMillis()-startT));
                     System.out.println(receivedData);
-                } //while not done
-            }
+                }else{
+                    kkSocket.close();
+                }
+            }//while not done
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host ");
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O ff the connection to ");
+            System.err.println("Couldn't get I/O off the connection to ");
             System.exit(1);
         } //catch io
     }//end Singleuser
 
-    public static void multipleUsers(int numUsers) {
+    public static void multipleUsers(int numUsers,String address) {
         done = false;
         while (!done) {
             getInput();//get Input
             if (done == false) {
-                runClients();//start the clients
+                runClients(address);//start the clients
                 printResults();//get the results
             } //if the program isn't done
         } //while the program isn't done
@@ -145,11 +150,11 @@ public class MainClass {
     /**
      * Runs the clients until they all are finished
      */
-    private static void runClients() {
+    private static void runClients(String address) {
         clients = new Client[numUsers];
         int i;
         for (i = 0; i < clients.length; i++) {
-            clients[i] = new Client(str);
+            clients[i] = new Client(str,address);
         } //init clients
         for (i = 0; i < clients.length; i++) {
             clients[i].start();

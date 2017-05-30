@@ -12,13 +12,15 @@ public class Client extends Thread {
     private String str;
     private long startTime;
     private long totalTime;
+    private String address;
 
-    public Client(String str) {
+    public Client(String str,String address) {
         this.str = str;
+        this.address = address;
     }
 
     public void run() {
-        try (Socket kkSocket = new Socket("127.0.0.1", 8080);
+        try (Socket kkSocket = new Socket(address, 8080);
                 PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
             startTime = System.currentTimeMillis();
@@ -32,7 +34,6 @@ public class Client extends Thread {
 
             TimeKeeper.sumTime += totalTime;
             TimeKeeper.numTimes += 1;
-            System.out.println(TimeKeeper.numTimes);
             kkSocket.close();
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host ");

@@ -24,15 +24,15 @@ public class MainClass {
 		isRunning = true;
 		try {
 			ServerSocket serverSocket = new ServerSocket(8080);
+			ServerProtocol kkp = new ServerProtocol();
+			String inputLine, outputLine;
 			while (isRunning) {
 				clientSocket = serverSocket.accept();
 				System.out.println("Client Connected");
 				out = new PrintWriter(clientSocket.getOutputStream(), true);
 				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				String inputLine, outputLine;
 
 				// Initiate conversation with client
-				ServerProtocol kkp = new ServerProtocol();
 				outputLine = kkp.processInput("WAITING");
 				out.println(outputLine);
 				while (!clientSocket.isClosed() && (inputLine = in.readLine()) != null) {
