@@ -22,6 +22,7 @@ public class MainClass {
 
 	public static void main(String[] args) {
 		isRunning = true;
+
 		try {
 			ServerSocket serverSocket = new ServerSocket(8080);
 			ServerProtocol kkp = new ServerProtocol();
@@ -31,7 +32,6 @@ public class MainClass {
 				System.out.println("Client Connected");
 				out = new PrintWriter(clientSocket.getOutputStream(), true);
 				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
 				// Initiate conversation with client
 				outputLine = kkp.processInput("WAITING");
 				out.println(outputLine);
@@ -39,6 +39,8 @@ public class MainClass {
 					outputLine = kkp.processInput(inputLine);
 					out.println(outputLine);
 					if (outputLine.equals("quit")) {
+						out.close();
+						in.close();
 						clientSocket.close();
 						break;
 					}
