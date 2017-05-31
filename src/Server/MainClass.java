@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
 import java.net.*;
 import java.io.*;
 
@@ -59,7 +58,6 @@ public class MainClass {
 class ServerProtocol {
 	private static final int WAITING = 0;
 	private static final int SENTREQUEST = 1;
-	private static final int NUMJOKES = 5;
 
 	private int state = WAITING;
 
@@ -96,18 +94,11 @@ class ServerProtocol {
 
 				break;
 			}
-			/*
-			if (theInput.equalsIgnoreCase("Who's there?")) {
-			    theOutput = clues[currentJoke];
-			    state = SENTCLUE;
-			} else {
-			    theOutput = "You're supposed to say \"Who's there?\"! " +
-			    "Try again. Knock! Knock!";
-			}*/
 		}
 		return theOutput;
 	}
 
+	//Gets the output for the specific input string
 	public String getOutput(String s) {
 		String line = "";
 		try {
@@ -119,6 +110,7 @@ class ServerProtocol {
 			while ((temp = input.readLine()) != null) {
 				line += temp;
 			}
+			input.close();
 			process.waitFor();
 			return line;
 		}
