@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.lang.Thread;
 
@@ -37,7 +38,7 @@ public class MainClass {
         if (numUsers == 1)
             singleUser(args[0]);
         else
-            multipleUsers(numUsers,args[0]);
+            multipleUsers(numUsers, args[0]);
     }//end main
 
     public static void singleUser(String address) {
@@ -47,26 +48,18 @@ public class MainClass {
                 BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
             //Begin I/O Loop
             done = false;
-            boolean firstConn = true;
             while (!done) {
                 getInput();
                 if (done == false) {
-                    startT=System.currentTimeMillis();
-                    if (firstConn) {
-                        if (in.readLine().equals("1")) {
-                            out.println(str);
-                        }
-                        firstConn = false;
-                    } else {
-                        out.println(str);
-                    }
+                    startT = System.currentTimeMillis();
+                    out.println(str);
                     String receivedData = in.readLine();
-                    System.out.println("Total Time: "+(System.currentTimeMillis()-startT));
+                    System.out.println("Total Time: " + (System.currentTimeMillis() - startT));
                     System.out.println(receivedData);
-                }else{
+                } else {
                     kkSocket.close();
                 }
-            }//while not done
+            } //while not done
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host ");
@@ -77,7 +70,7 @@ public class MainClass {
         } //catch io
     }//end Singleuser
 
-    public static void multipleUsers(int numUsers,String address) {
+    public static void multipleUsers(int numUsers, String address) {
         done = false;
         while (!done) {
             getInput();//get Input
@@ -112,8 +105,12 @@ public class MainClass {
         boolean correctInpt = false;
 
         while (!correctInpt) {
-            userInpt = s.nextInt();
-
+            try {
+                userInpt = s.nextInt();
+            } catch (Exception e) {
+                userInpt = -2;
+                correctInpt = true;
+            }
             if ((userInpt == 1) || (userInpt == 2) || (userInpt == 3) || (userInpt == 4) || (userInpt == 5)
                     || (userInpt == 6) || (userInpt == 7)) {
                 correctInpt = true;
@@ -154,7 +151,7 @@ public class MainClass {
         clients = new Client[numUsers];
         int i;
         for (i = 0; i < clients.length; i++) {
-            clients[i] = new Client(str,address);
+            clients[i] = new Client(str, address);
         } //init clients
         for (i = 0; i < clients.length; i++) {
             clients[i].start();

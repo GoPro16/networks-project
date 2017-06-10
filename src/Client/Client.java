@@ -14,7 +14,7 @@ public class Client extends Thread {
     private long totalTime;
     private String address;
 
-    public Client(String str,String address) {
+    public Client(String str, String address) {
         this.str = str;
         this.address = address;
     }
@@ -24,14 +24,11 @@ public class Client extends Thread {
                 PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));) {
             startTime = System.currentTimeMillis();
-
-            if (in.readLine().equals("1")) {
-                out.println(str);
-            }
+            out.println(str);
 
             String receivedData = in.readLine();
             totalTime = System.currentTimeMillis() - startTime;
-
+            out.println("quit");
             TimeKeeper.sumTime += totalTime;
             TimeKeeper.numTimes += 1;
             kkSocket.close();
